@@ -6,7 +6,7 @@
 /*   By: ntamacha <ntamacha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 10:39:39 by ntamacha          #+#    #+#             */
-/*   Updated: 2025/05/20 14:42:09 by ntamacha         ###   ########.fr       */
+/*   Updated: 2025/05/26 16:43:44 by ntamacha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,37 +14,52 @@
 
 char	*get_next_line(int fd)
 {
-	char	*line;
-	int		bytes;
-	char	buf;
+	char			*line;
+	static char		*tmp = NULL;
+	int				bytes;
+	char			buf[BUFFER_SIZE + 1];
+	int 			i;
 
-	line = NULL;
-	bytes = read(fd, &buf, 1);
-	while (bytes > 0)
+	if (tmp)
 	{
-		line = ft_strjoin(line, buf);
-		if (!line || buf == '\n')
-			break ;
-		bytes = read(fd, &buf, 1);
+		line = tmp;
+		tmp = NULL;
 	}
-	if (bytes <= 0 && !line)
-		return (NULL);
-	return (line);
+	while (1)
+	{
+		i = 0;
+		bytes = read(fd, buf, BUFFER_SIZE);
+		if (bytes <= 0)
+			break ;
+		while (i <= (bytes - 1) && bytes > 0)
+		{
+			line = ft_strjoin(line, buf[i]);
+			if (buf[i] == '\n')
+			{
+				while (i++ <= (bytes - 1))
+					tmp = ft_strjoin(tmp, buf[i++]);
+				return (line);
+			}
+			i++;
+		}
+
 }
 
-// #include <fcntl.h>
-// #include <unistd.h>
-// #include <stdio.h>
-// int main()
-// {
-// 	int	fd = open("text.txt", O_RDONLY);
-// 	char *line;
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
+int main()
+{
+	int	fd = open("text.txt", O_RDONLY);
+	char *line;
 
-// 	while (line)
-// 	{
-// 		line = get_next_line(fd);
-// 		printf("%s", line);
-// 	}
-// 	close(fd);
-// 	return (0);
-// }
+	line = get_next_line(fd);
+	printf("%s", line);
+	while (line)
+	{
+		line = get_next_line(fd);
+		printf("%s", line);
+	}
+	close(fd);
+	return (0);
+}
