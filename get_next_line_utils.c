@@ -6,41 +6,21 @@
 /*   By: ntamacha <ntamacha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 10:39:33 by ntamacha          #+#    #+#             */
-/*   Updated: 2025/05/27 22:31:39 by ntamacha         ###   ########.fr       */
+/*   Updated: 2025/06/15 14:07:16 by ntamacha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_statictmp(char *buf, int i, int bytes)
-{
-	char	*tmp;
-	int		j;
-
-	j = 0;
-	i++;
-	tmp = malloc(bytes - i + 1);
-	if (!tmp)
-		return (NULL);
-	while (i <= (bytes - 1))
-	{
-		tmp[j] = buf[i];
-		i++;
-		j++;
-	}
-	tmp[j] = '\0';
-	return (tmp);
-}
-
-char	*ft_strjoin(char *s1, char c)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*new;
 	int		i;
+	int		j;
 
-	i = 0;
-	while (s1 && s1[i])
-		i++;
-	new = malloc(i + 2);
+	if (!s1 && !s2)
+		return (NULL);
+	new = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
 	if (!new)
 		return (NULL);
 	i = 0;
@@ -49,9 +29,59 @@ char	*ft_strjoin(char *s1, char c)
 		new[i] = s1[i];
 		i++;
 	}
-	new[i] = c;
-	i++;
+	j = 0;
+	while (s2 && s2[j])
+		new[i++] = s2[j++];
 	new[i] = '\0';
-	free(s1);
 	return (new);
+}
+
+char	*ft_substr(char *s, int start, int len)
+{
+	char	*sub;
+	int		i;
+
+	if (!s || start >= ft_strlen(s))
+		return (ft_strdup(""));
+	if (len > ft_strlen(s + start))
+		len = ft_strlen(s + start);
+	sub = malloc(len + 1);
+	if (!sub)
+		return (NULL);
+	i = 0;
+	while (s[start + i] && i < len)
+	{
+		sub[i] = s[start + i];
+		i++;
+	}
+	sub[i] = '\0';
+	return (sub);
+}
+
+char	*ft_strdup(char *s)
+{
+	char	*copy;
+	int		i;
+
+	copy = malloc(ft_strlen(s) + 1);
+	if (!copy)
+		return (NULL);
+	i = 0;
+	while (s[i])
+	{
+		copy[i] = s[i];
+		i++;
+	}
+	copy[i] = '\0';
+	return (copy);
+}
+
+int	ft_strlen(char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s && s[i])
+		i++;
+	return (i);
 }
