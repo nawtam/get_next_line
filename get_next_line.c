@@ -6,7 +6,7 @@
 /*   By: ntamacha <ntamacha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 10:39:39 by ntamacha          #+#    #+#             */
-/*   Updated: 2025/06/15 14:48:35 by ntamacha         ###   ########.fr       */
+/*   Updated: 2025/06/18 10:30:38 by ntamacha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,17 +43,17 @@ static char	*read_and_join(int fd, char *stash)
 
 	buf = malloc(BUFFER_SIZE + 1);
 	if (!buf)
-		return (NULL);
+		return (free(stash), NULL);
 	bytes = 1;
 	while (!found_nl(stash) && bytes > 0)
 	{
 		bytes = read(fd, buf, BUFFER_SIZE);
 		if (bytes < 0)
-			return (free_all(buf, stash));
+			return (free_all(buf, stash), NULL);
 		buf[bytes] = '\0';
 		tmp = ft_strjoin(stash, buf);
 		if (!tmp)
-			return (free(buf), NULL);
+			return (free_all(buf, stash), NULL);
 		free(stash);
 		stash = tmp;
 	}
